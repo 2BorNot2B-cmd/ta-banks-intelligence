@@ -1,9 +1,13 @@
 name: Run Leumi Bot
 on:
   schedule:
-    # 0-4 מייצג את ימי ראשון עד חמישי (ימי המסחר בישראל)
-    - cron: '30 13 * * 0-4' 
-  workflow_dispatch:
+    # הרצה בימים ראשון עד חמישי בשעה 15:30 (13:30 UTC)
+    - cron: '30 13 * * 0-4'
+    
+    # הרצה ביום שישי בשעה 12:00 (10:00 UTC)
+    - cron: '0 10 * * 5'
+    
+  workflow_dispatch: # מאפשר הרצה ידנית
 
 jobs:
   build:
