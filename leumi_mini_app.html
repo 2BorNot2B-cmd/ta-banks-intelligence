@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פתח לאומי טרייד</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tg-theme-bg-color, #1a1a2e);
+      color: var(--tg-theme-text-color, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: var(--tg-theme-secondary-bg-color, #16213e);
+      border-radius: 20px;
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .logo {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--tg-theme-text-color, #fff);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.6;
+      margin-bottom: 32px;
+    }
+
+    .btn-main {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .btn-main:active { transform: scale(0.97); opacity: 0.9; }
+
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      color: var(--tg-theme-link-color, #00b4d8);
+      border: 1.5px solid var(--tg-theme-link-color, #00b4d8);
+      border-radius: 14px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 0.1s;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 13px;
+      opacity: 0.5;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">📈</div>
+    <h1>לאומי טרייד</h1>
+    <p class="subtitle">פתח את אפליקציית המסחר</p>
+
+    <button class="btn-main" onclick="openApp()">
+      🚀 פתח אפליקציה
+    </button>
+    <button class="btn-secondary" onclick="openWeb()">
+      🌐 פתח באתר
+    </button>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.expand();
+
+    // Package name של לאומי טרייד
+    const PKG     = "com.leumi.iLeumiTrade.UI";
+    const WEB_URL = "https://trade.bankleumi.co.il/";
+    const PLAY    = `https://play.google.com/store/apps/details?id=${PKG}`;
+
+    // intent:// URL – מנסה לפתוח ישירות, נופל ל-Play Store אם לא מותקן
+    const INTENT  = `intent://#Intent;package=${PKG};scheme=https;end`;
+
+    function setStatus(msg) {
+      document.getElementById("status").textContent = msg;
+    }
+
+    function openApp() {
+      setStatus("מנסה לפתוח את האפליקציה...");
+
+      // ניסיון 1: intent:// (עובד בדפדפן מובנה של טלגרם אנדרואיד)
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+
+      let appOpened = false;
+
+      // אם החלון מאבד focus – האפליקציה נפתחה
+      window.addEventListener("blur", () => { appOpened = true; }, { once: true });
+
+      // ניסיון דרך location
+      try {
+        window.location.href = INTENT;
+      } catch(e) {}
+
+      // אחרי 2 שניות – אם לא נפתח, שלח ל-Play Store
+      setTimeout(() => {
+        if (!appOpened) {
+          setStatus("האפליקציה לא נמצאה – פותח חנות...");
+          window.location.href = PLAY;
+        } else {
+          setStatus("✅ האפליקציה נפתחה!");
+          if (tg) setTimeout(() => tg.close(), 1000);
+        }
+      }, 2000);
+    }
+
+    function openWeb() {
+      setStatus("פותח אתר...");
+      window.open(WEB_URL, "_blank");
+    }
+  </script>
+</body>
+</html>
