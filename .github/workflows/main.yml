@@ -1,8 +1,8 @@
 name: Run Leumi Bot
 on:
   schedule:
-    # שני עד חמישי - מכוון ל-15:00 (13:00 UTC)
-    - cron: '0 13 * * 1-4'
+    # שני עד חמישי - מכוון ל-14:45 (12:45 UTC)
+    - cron: '45 12 * * 1-4'
     
     # יום שישי - נשאר ב-12:00 (10:00 UTC)
     - cron: '0 10 * * 5'
@@ -28,5 +28,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GM_TOKEN: ${{ secrets.GM_TOKEN }}
         run: python "TEST BANKS.py"
