@@ -54,7 +54,7 @@ def call_gemini(prompt: str) -> str | None:
         url = (
             f"https://generativelanguage.googleapis.com"
             f"/v1beta/models/{model}:generateContent"
-            f"?key={GEMINI_API_KEY}"
+            f"?key={GM_TOKEN}"
         )
         try:
             print(f"⏳ Trying: {model}")
@@ -174,4 +174,5 @@ def run():
 
 if __name__ == "__main__":
     run()
+
 
