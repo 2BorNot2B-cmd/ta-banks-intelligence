@@ -106,10 +106,21 @@ def get_gemini_analysis(bank_results: list, trend: float) -> str | None:
 
 def get_accurate_change(symbol: str):
     try:
-        df = yf.download(symbol, period="7d", interval="1d", progress=False)
+        ticker = yf.Ticker(symbol)
+        # שימוש ב-fast_info נותן נתונים בזמן אמת בצורה אמינה יותר
+        info = ticker.fast_info
+        current_price = info.last_price
+        prev_close = info.previous_close
+        
+        if current_price and prev_close:
+            change = ((current_price - prev_close) / prev_close) * 100
+            return current_price, change
+            
+        # גיבוי בשיטה הישנה אם fast_info נכשל
+        df = ticker.history(period="2d")
         if len(df) >= 2:
-            current_close = float(df["Close"].iloc[-1])
-            prev_close    = float(df["Close"].iloc[-2])
+            current_close = df['Close'].iloc[-1]
+            prev_close = df['Close'].iloc[-2]
             change = ((current_close - prev_close) / prev_close) * 100
             return current_close, change
     except Exception as e:
@@ -174,5 +185,6 @@ def run():
 
 if __name__ == "__main__":
     run()
+
 
 
